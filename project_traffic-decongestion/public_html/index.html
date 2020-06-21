@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<html>
+    <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Google MAPS DEMO</title>
+    <style>
+      html, body 
+      {   
+        height:100%;
+        padding:0;
+        margin:0;
+      }
+      #map 
+      {
+        float:left;
+        clear:none;  
+        width: 100%;
+        height: 400px;
+        background-color: grey;
+      }
+      #right-panel
+      {
+        float:left;
+        clear:none;
+        width: 100%;
+        height: 100%;
+        background-color: orange;
+      }
+      #floating-panel
+      {
+        float:left;
+        clear:none;
+        width: 100%;
+        height: 100px;
+        background-color: blue;
+      }
+       #warnings-panel {
+        width: 100%;
+        height:100%;
+        text-align: center;
+      }
+    </style>
+    </head>
+    <body> 
+        <div id="map"></div> 
+        <div id="right-panel">
+            <p>Total Distance: <span id="total"></span></p>
+        </div>
+        <script>
+            function initMap() 
+            {
+                var bangalore = new google.maps.LatLng(12.9716,77.594);  // Australia
+                var nandi = new google.maps.LatLng(13.3702,77.683);
+                var lalbagh = new google.maps.LatLng(12.9507,77.584);//12.9507,77.584
+            
+                var map = new google.maps.Map(document.getElementById('map'), {zoom: 4, center: bangalore});// creating a map and putting it on div=map
+                var marker = new google.maps.Marker({position: nandi, map: map});
+                var marker = new google.maps.Marker({position: lalbagh , map: map});
+                
+                
+                var directionsService = new google.maps.DirectionsService;//instantiating a directions service 
+                var directionsRenderer = new google.maps.DirectionsRenderer({map: map});//creating a rendere for directions and binding it to the map
+                
+                
+                calculateAndDisplayRoute('Nandi Hills, Karnataka','Lalbagh Botanical Garden, Mavalli, Bengaluru, Karnataka',directionsService, directionsRenderer);
+                
+                directionsRenderer.addListener('directions_changed', function() 
+                {
+                    computeTotalDistance(directionsRenderer.getDirections());
+                });
+                
+                //computeTotalDistance(directionsRenderer.getDirections());
+                     
+            }
+            
+            function calculateAndDisplayRoute(origin,destination,directionsService, directionsRenderer)
+            {
+               
+                directionsService.route(
+                {
+                    origin: origin,
+                    destination: destination,
+                    travelMode: 'WALKING'
+                },
+                function(response, status) 
+                {
+                    if (status === 'OK') 
+                    {
+                        directionsRenderer.setDirections(response);
+                    } 
+                    else 
+                    {
+                        window.alert('Directions request failed due to ' + status);
+                    }
+                });
+                document.getElementById('total').innerHTML =' km';
+            }
+            
+            function computeTotalDistance(result) 
+            {
+                document.getElementById('total').innerHTML =' km';
+                var total = 0;
+                var myroute = result.routes[0];
+                for (var i = 0; i < myroute.legs.length; i++) 
+                {
+                    total += myroute.legs[i].distance.value;
+                }
+                total = total / 1000;
+                document.getElementById('total').innerHTML = total + ' km';
+            }
+                
+            
+            
+                   
+        </script>
+        <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCedJrDCp8q8zi3EIkgKod5_cZs_J_n5WU&callback=initMap">
+        </script>
+    </body>
+</html>
+        

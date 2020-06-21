@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+    <title>Geocoding Service</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map 
+      {
+        float:left;
+        clear:none;  
+        padding: 0;
+        margin:0;
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body 
+      {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #floating-panel 
+      {
+        float:left;
+        clear:none;  
+        margin:0;
+        padding: 5px;
+        text-align: center;
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+      }
+    </style>
+  </head>
+    <body>
+        <div id="floating-panel">
+            <input id="address" type="textbox" value="Sydney, NSW">
+            <input id="submit" type="button" value="Geocode">
+        </div>
+        <div id="map"></div>
+        <script>
+            function initMap() 
+            {
+                var bangalore = new google.maps.LatLng(12.9716,77.594);  // Australia
+                var nandi = new google.maps.LatLng(13.3702,77.683);
+                var lalbagh = new google.maps.LatLng(12.9507,77.584);//12.9507,77.584
+            
+                var map = new google.maps.Map(document.getElementById('map'), {zoom: 4, center: bangalore});
+                var geocoder = new google.maps.Geocoder();
+                document.getElementById('submit').addEventListener('click', function() 
+                {
+                    geocodeAddress(geocoder, map);
+                });
+                 
+            }
+            
+            function geocodeAddress(geocoder, resultsMap) 
+            {
+                var address = document.getElementById('address').value;
+                geocoder.geocode({'address': address}, function(results, status) {
+                if (status === 'OK') 
+                {
+                    resultsMap.setCenter(results[0].geometry.location);
+                    var marker = new google.maps.Marker({
+                    map: resultsMap,
+                    position: results[0].geometry.location
+                    });
+                } 
+                else 
+                {
+                    alert('Geocode was not successful for the following reason: ' + status);
+                }
+                });
+            }
+        </script>
+        <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjzqXoXJaHDUI7ACD3EPsMEMMXs7h0_l4&callback=initMap">
+        </script>
+            
+            
+    </body>
+</html>
